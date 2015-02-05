@@ -1,0 +1,135 @@
+En Arduino:::
+
+
+int fsrAnalogPin = 0; // FSR is connected to analog 0(sensor conectado al pin 0 analogo)
+int fsrAnalogPin1 = 1;
+int fsrAnalogPin2 = 2;
+int fsrAnalogPin3= 3;
+
+
+
+int fsrReading;      // the analog reading from the FSR resistor divider
+int fsrReading1; 
+int fsrReading2;
+int fsrReading3;
+int LEDbrightness;
+int LEDbrightness1;
+int LEDbrightness2;
+int LEDbrightness3;
+ 
+void setup(void) {
+  Serial.begin(9600);   // We'll send debugging information via the Serial monitor
+
+}
+ 
+void loop(void) {
+  fsrReading = analogRead(fsrAnalogPin);
+  fsrReading1= analogRead(fsrAnalogPin1);
+  fsrReading2= analogRead(fsrAnalogPin2);
+  fsrReading3= analogRead(fsrAnalogPin3);
+  
+  Serial.print(fsrReading);
+  Serial.print(",");
+  Serial.print(fsrReading1);
+  Serial.print(",");
+  Serial.print(fsrReading2);
+  Serial.print(",");
+  Serial.print(fsrReading3);
+  Serial.println(",");
+  // we'll need to change the range from the analog reading (0-1023) down to the range
+  // used by analogWrite (0-255) with map!
+ 
+  // LED gets brighter the harder you press
+
+  delay(100);
+}
+
+
+
+
+
+
+
+
+EN PROCESSING::::
+
+
+import processing.serial.*;
+
+String portname = "COM3";
+Serial myPort;
+int numsensores=5; // Number of sensors to receive VERY IMPORTANT TO MATCH NUMBER THAT IS SENDING ARDUINO ((+1))
+float[] sensorValues = new float[numsensores]; // array to hold the incoming values
+color[] sensorColor = new color[numsensores]; 
+char DELIM = ','; // the delimeter for parsing incoming data
+PFont font;
+int numH = 570; 
+int separacion = 80;
+void setup () {
+size(700, 700);
+
+println(Serial.list());
+myPort = new Serial(this, portname, 9600);
+// Load the font. Fonts must be placd within the data 
+// directory of your sketch. Use Tools > Create Font 
+// to create a distributable bitmap font. 
+// For vector fonts, use the createFont() function. 
+myPort.clear();
+delay(100);
+//font = loadFont("ArialMT-48.vlw"); 
+//font = loadFont("CenturyGothic-Bold-14.vlw"); 
+randomcolors(numsensores);
+smooth();
+}
+
+void draw () {
+colorMode(HSB,360,99,99);
+background(0,0,99); 
+line(90, 70, 90, 570); 
+line(90, 570, 650, 570);
+for(int i = 0; i <numsensores; i++){
+fill(sensorColor[i],99,99);
+rect(separacion,numH-sensorValues[i]/2,25,sensorValues[i]/2);
+fill(0);
+text(int(sensorValues[i]), separacion, 590);
+separacion=separacion+60;
+} 
+separacion=120;
+fill(0);
+ 
+text("Valor \nSensor", 22, 80);
+text("Entrada \nAnalógica", 20, 590);
+noFill();
+}
+void randomcolors(int numsensores){
+
+for (int i = 0; i <numsensores; i++){
+sensorColor[i]=int(random(0,359));
+//sensorColor[i]=int(random(-999932000,999932000));
+println(sensorColor[i]);
+}
+
+}
+void serialEvent(Serial myPort) {
+// read incoming data until you get a newline:
+String serialString = myPort.readStringUntil('\n');
+// if the read data is a real string, parse it:
+
+if (serialString != null) {
+String[] numbers = split(serialString, DELIM);
+// convert each subastring into an int
+if (numbers.length == numsensores) {
+for (int i = 0; i < numbers.length; i++) {
+// make sure you're only reading as many numbers as
+// you can fit in the array:
+if (i <= numsensores) {
+// trim off any whitespace from the substring:
+numbers[i] = trim(numbers[i]);
+sensorValues[i] = float(numbers[i]);
+}
+// Things we don't handle in particular can get output to the text window
+// print(serialString);
+}
+}
+}
+}
