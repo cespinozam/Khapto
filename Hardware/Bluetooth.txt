@@ -1,0 +1,11 @@
+Enlaces utiles por si hay que trabajar la conexion por bluetooth 
+(No es para Qt)
+
+http://www.arduino-hacks.com/adding-bluetooth-capability-project-arduino-hc-06/
+http://www.instructables.com/id/Cheap-2-Way-Bluetooth-Connection-Between-Arduino-a/step2/Load-the-Arduino-test-sketches/
+
+Descarga de Tera Term (solo para windows, Linux no lo necesita):
+http://ttssh2.sourceforge.jp/index.html.en
+
+En caso de problemas con la configuración de este, SparkFun tiene un tutorial: 
+https://learn.sparkfun.com/tutorials/terminal-basics/all#tera-term-windows
